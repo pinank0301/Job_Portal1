@@ -11,7 +11,7 @@ const Onboarding = () => {
 
   const navigateUser = (currRole) => {
     console.log(`Navigating with role: ${currRole}`);
-    navigate(currRole === "recruiter" ? "/post-job" : "/jobs");
+    navigate(currRole === "recruiter" ? "/post-job" : "/jobListing");
   };
 
   const handleRoleSelection = async (role) => {
