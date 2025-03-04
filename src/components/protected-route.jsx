@@ -1,36 +1,31 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
-import { useState, useEffect } from "react";
+import { BarLoader } from "react-spinners";
 
 const ProtectedRoute = ({ children }) => {
   const { isSignedIn, isLoaded, user } = useUser();
   const { pathname } = useLocation();
-  const [isCheckingRole, setIsCheckingRole] = useState(true);
 
-  useEffect(() => {
-    // Give a short delay to ensure metadata is fully loaded
-    const checkRoleTimeout = setTimeout(() => {
-      setIsCheckingRole(false);
-    }, 1000);
-
-    return () => clearTimeout(checkRoleTimeout);
-  }, [user]);
-
-  // Show loading screen until Clerk is fully initialized
-  if (!isLoaded || isCheckingRole) {
-    return <div>Loading...</div>; // Or replace with a more sophisticated loading spinner
+  // Loading state
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <BarLoader width={"100%"} color="#36d7b7" />
+      </div>
+    );
   }
 
-  // Redirect to login if user is not signed in
+  // Not signed in - redirect to landing with sign-in
   if (!isSignedIn) {
     return <Navigate to="/?sign-in=true" replace />;
   }
 
-  // Ensure user metadata is loaded before checking role
+  // No role set - redirect to onboarding
   if (!user?.unsafeMetadata?.role && pathname !== "/onboarding") {
     return <Navigate to="/onboarding" replace />;
   }
 
+  // User has a role and is on a valid path
   return children;
 };
 
