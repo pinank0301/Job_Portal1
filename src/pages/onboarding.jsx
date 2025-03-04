@@ -10,23 +10,30 @@ const Onboarding = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const navigateUser = (currRole) => {
+    console.log(`Navigating with role: ${currRole}`);
     navigate(currRole === "recruiter" ? "/post-job" : "/jobs");
   };
 
   const handleRoleSelection = async (role) => {
-    if (!user) return;
+    if (!user) {
+      console.error('No user object available');
+      return;
+    }
 
     setIsUpdating(true);
     try {
-      // Explicitly update user metadata
-      await user.update({
+      // More explicit metadata update
+      const updatedUser = await user.update({
         unsafeMetadata: { 
           role: role,
           completedOnboarding: true 
         }
       });
 
+      console.log('User updated:', updatedUser);
       console.log(`Role updated to: ${role}`);
+      
+      // Immediate navigation
       navigateUser(role);
     } catch (err) {
       console.error("Error updating role:", err);
@@ -35,10 +42,17 @@ const Onboarding = () => {
   };
 
   useEffect(() => {
+    console.group('Onboarding Debug');
+    console.log('Is Loaded:', isLoaded);
+    console.log('User Object:', user);
+    console.log('Current Role:', user?.unsafeMetadata?.role);
+    console.groupEnd();
+
     // More robust role checking
     if (isLoaded && user) {
       const userRole = user.unsafeMetadata?.role;
       if (userRole) {
+        console.log('Existing role found, navigating');
         navigateUser(userRole);
       }
     }
