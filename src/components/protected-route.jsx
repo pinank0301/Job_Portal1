@@ -5,9 +5,9 @@ const ProtectedRoute = ({ children }) => {
   const { isSignedIn, isLoaded, user } = useUser();
   const { pathname } = useLocation();
 
-  // If Clerk is still loading, prevent any redirects
+  // Show loading screen until Clerk is fully initialized
   if (!isLoaded) {
-    return null; // Or a loading spinner
+    return <div>Loading...</div>; // Or replace with a loading spinner
   }
 
   // Redirect to login if user is not signed in
@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/?sign-in=true" replace />;
   }
 
-  // Ensure user data is fully available before checking metadata
+  // Ensure user metadata is loaded before checking role
   if (user && !user?.unsafeMetadata?.role && pathname !== "/onboarding") {
     return <Navigate to="/onboarding" replace />;
   }

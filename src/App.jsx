@@ -1,5 +1,4 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-
 import AppLayout from "./layouts/app-layout";
 import ProtectedRoute from "./components/protected-route";
 import { ThemeProvider } from "./components/theme-provider";
@@ -18,10 +17,7 @@ const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
-      {
-        path: "/",
-        element: <LandingPage />,
-      },
+      { path: "/", element: <LandingPage /> },
       {
         path: "/onboarding",
         element: (
